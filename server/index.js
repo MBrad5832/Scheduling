@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// ES modules dirname fix
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -15,9 +14,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
-// app.use(express.static(path.join(__dirname, '../client/build')));
+
+// app.use(express.static(path.join(__dirname, '../client/build')));  // you can enable later if you build react
 
 // Database
 mongoose
@@ -47,7 +47,7 @@ const reportSchema = new mongoose.Schema({
 });
 const Report = mongoose.model("Report", reportSchema);
 
-// Multer setup for photo uploads
+// Multer for photo uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -58,19 +58,19 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// CRUD Endpoints
+// CRUD Routes
 
 // Projects
-//app.get("/api/projects", async (req, res) => {
+app.get("/api/projects", async (req, res) => {
   const projects = await Project.find();
   res.json(projects);
-//});
+});
 
 app.post("/api/projects", async (req, res) => {
   const project = new Project(req.body);
   await project.save();
   res.json(project);
-//});
+});
 
 app.put("/api/projects/:id", async (req, res) => {
   const updated = await Project.findByIdAndUpdate(req.params.id, req.body, {
@@ -135,16 +135,17 @@ app.delete("/api/reports/:id", async (req, res) => {
   res.json({ message: "Report deleted" });
 });
 
-// Serve React build + catch all
+// catch-all for React app — disable for now since you don’t have build
+/*
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
+*/
 
-// Error handling
+// 404 fallback
 app.use((req, res) => {
   res.status(404).send("404 Not Found");
 });
 
+// Start server
 app.listen(port, () => console.log(`Server running on port ${port}`));
-app.use(cors({origin: "*"}));
-             
