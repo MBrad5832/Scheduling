@@ -70,7 +70,7 @@ app.post("/api/projects", async (req, res) => {
   const project = new Project(req.body);
   await project.save();
   res.json(project);
-});
+//});
 
 app.put("/api/projects/:id", async (req, res) => {
   const updated = await Project.findByIdAndUpdate(req.params.id, req.body, {
