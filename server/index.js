@@ -64,7 +64,7 @@ const upload = multer({ storage });
 //app.get("/api/projects", async (req, res) => {
   const projects = await Project.find();
   res.json(projects);
-});
+//});
 
 app.post("/api/projects", async (req, res) => {
   const project = new Project(req.body);
