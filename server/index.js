@@ -60,7 +60,7 @@ const upload = multer({ storage });
 
 // CRUD Routes
 
-// Projects
+// Projects 
 app.get("/api/projects", async (req, res) => {
   const projects = await Project.find();
   res.json(projects);
